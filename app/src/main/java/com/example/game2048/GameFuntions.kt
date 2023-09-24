@@ -1,5 +1,6 @@
 package com.example.game2048
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 
 fun move(
@@ -10,7 +11,6 @@ fun move(
         SwipeDirection.Right -> moveRight(array)
         SwipeDirection.Left -> moveLeft(array)
         SwipeDirection.Up -> moveUp(array)
-        // Implement Down direction as needed
         SwipeDirection.Down -> moveDown(array)
     }
 }
@@ -18,27 +18,11 @@ fun move(
 fun moveRight(
     array: List<List<MutableState<Int>>>
 ) {
-    for (row in array) {
-        for (i in row.indices.reversed()) {
-            if (i > 0 && row[i].value == row[i - 1].value) {
-                row[i].value *= 2
-                row[i - 1].value = 0
-            }
-        }
-        var nonZeroIndex = row.size - 1
-        for (i in row.indices.reversed()) {
-            if (row[i].value != 0) {
-                row[nonZeroIndex--].value = row[i].value
-            }
-        }
-        for (i in nonZeroIndex downTo 0) {
-            row[i].value = 0
-        }
-    }
+
 }
+
 fun moveLeft(array: List<List<MutableState<Int>>>) {
     for (row in array) {
-        // First, combine adjacent numbers from left to right
         for (i in 0 until row.size - 1) {
             if (row[i].value == row[i + 1].value) {
                 row[i].value *= 2
