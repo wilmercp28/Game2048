@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.game2048.generateNextNumber
+import com.example.game2048.boxColors
 import com.example.game2048.getSwipeModifier
 import com.example.game2048.move
 import java.util.Random
@@ -33,8 +33,8 @@ val gameStarted = remember { mutableStateOf(false) }
     val array = getArray(gridSize,gameStarted)
     Column(
             modifier = getSwipeModifier(){
-                move(it,array)
-                generateNextNumber(array)
+                move(it,array,gridSize)
+
             }
 
         ) {
@@ -53,11 +53,14 @@ val gameStarted = remember { mutableStateOf(false) }
                             Box(
                                 modifier = Modifier
                                     .size((boxSize - 20).dp)
-                                    .background(Color.Black),
+                                    .background(boxColors(array[i][j].value)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 if (array[i][j].value != 0) {
-                                    Text(text = array[i][j].value.toString())
+                                    Text(
+                                        text = array[i][j].value.toString(),
+                                        color = Color.Black
+                                    )
                                 }
                             }
                         }
@@ -79,7 +82,7 @@ if (!gameStarted.value) {
     val random = Random()
     val indices = mutableSetOf<Pair<Int, Int>>()
 
-    while (indices.size < 2) {
+    while (indices.size < 5) {
         val randomRow = random.nextInt(gridSize)
         val randomCol = random.nextInt(gridSize)
         val indexPair = Pair(randomRow, randomCol)
