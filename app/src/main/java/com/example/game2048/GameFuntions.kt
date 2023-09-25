@@ -6,23 +6,23 @@ fun move(
     swipeDirection: SwipeDirection,
     array: List<List<MutableState<Int>>>,
     boardSide: Int,
-    onAnimation: (CombinedCell) -> Unit
+    onAnimation: (List<CombinedCell>) -> Unit
 ) {
     when (swipeDirection) {
         SwipeDirection.Right -> moveRight(array, boardSide) {
-            onAnimation(CombinedCell(it.row, it.column))
+            onAnimation(it)
         }
 
         SwipeDirection.Left -> moveLeft(array, boardSide) {
-            onAnimation(CombinedCell(it.row, it.column))
+
         }
 
         SwipeDirection.Up -> moveUp(array, boardSide) {
-            onAnimation(CombinedCell(it.row, it.column))
+
         }
 
         SwipeDirection.Down -> moveDown(array, boardSide) {
-            onAnimation(CombinedCell(it.row, it.column))
+
         }
     }
 }
@@ -30,9 +30,9 @@ fun move(
 fun moveRight(
     array: List<List<MutableState<Int>>>,
     boardSize: Int,
-    onAnimation: (CombinedCell) -> Unit
+    onAnimation: (List<CombinedCell>) -> Unit
 ) {
-    val tilePositions = mutableListOf<TilePosition>()
+    val combinedCells = mutableListOf<CombinedCell>()
     for (row in array.indices) {
         val temp = mutableListOf<Int>()
         for (column in array[row].indices) {
@@ -48,7 +48,7 @@ fun moveRight(
             if (temp[i] == temp[i - 1] && temp[i] != 0) {
                 temp[i] *= 2
                 temp[i - 1] = 0
-                onAnimation(CombinedCell(row, i))
+                combinedCells.add(CombinedCell(row, i))
             }
         }
         val result = mutableListOf<Int>()
@@ -65,6 +65,7 @@ fun moveRight(
             array[row][column].value = result[column]
         }
     }
+    onAnimation(combinedCells)
 }
 
 fun moveLeft(

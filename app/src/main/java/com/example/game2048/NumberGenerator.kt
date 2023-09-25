@@ -8,8 +8,6 @@ fun generateNextNumber(
 ) {
     val random = Random()
     val emptyCells = mutableListOf<Pair<Int, Int>>()
-
-    // Find all empty cells (cells with value 0)
     for (row in array.indices) {
         for (col in array[row].indices) {
             if (array[row][col].value == 0) {

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -18,9 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.game2048.CombinedCell
 import com.example.game2048.boxColors
 import com.example.game2048.generateNextNumber
 import com.example.game2048.getSwipeModifier
@@ -39,8 +36,7 @@ fun GameBoard(
     val combinedCellList = remember { mutableListOf<Int>() }
     Column(
         modifier = getSwipeModifier {
-            move(it, array, gridSize) { combinedCell ->
-                combinedCellList += array[combinedCell.row][combinedCell.column].value
+            move(it, array, gridSize) {
             }
             generateNextNumber(array)
         }
@@ -57,8 +53,7 @@ fun GameBoard(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val isCombined = array[i][j].value in combinedCellList
-                        Tiles(array[i][j].value, boxSize, isCombined)
+                        Tiles(array[i][j].value, boxSize, shouldAnimate = array[i][j].value in combinedCellList)
                     }
             }
         }
@@ -73,9 +68,11 @@ fun Tiles(
     shouldAnimate: Boolean
 ) {
     val boxSize = remember { mutableStateOf(size) }
+    val expandSize = 300
+
     LaunchedEffect(value) {
         if (shouldAnimate) {
-            boxSize.value = 300
+            boxSize.value = expandSize
             delay(100)
             boxSize.value = size
         }
