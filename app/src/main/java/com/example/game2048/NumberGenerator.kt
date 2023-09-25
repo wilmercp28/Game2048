@@ -3,9 +3,7 @@ package com.example.game2048
 import androidx.compose.runtime.MutableState
 import java.util.Random
 
-fun generateNextNumber(
-    array: List<List<MutableState<Int>>>
-) {
+fun generateNextNumber(array: List<List<MutableState<Int>>>) {
     val random = Random()
     val emptyCells = mutableListOf<Pair<Int, Int>>()
     for (row in array.indices) {
@@ -19,8 +17,6 @@ fun generateNextNumber(
     if (emptyCells.isNotEmpty()) {
         val randomIndex = random.nextInt(emptyCells.size)
         val (row, col) = emptyCells[randomIndex]
-        array[row][col].value = 2
+        array[row][col].value = if (random.nextDouble() < 0.25) 4 else 2
     }
-
-
 }
