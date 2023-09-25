@@ -32,6 +32,7 @@ fun moveRight(
     boardSize: Int,
     onAnimation: (CombinedCell) -> Unit
 ) {
+    val tilePositions = mutableListOf<TilePosition>()
     for (row in array.indices) {
         val temp = mutableListOf<Int>()
         for (column in array[row].indices) {
@@ -169,4 +170,10 @@ fun moveDown(
 data class CombinedCell(
     val row: Int,
     val column: Int,
+)
+data class TilePosition(
+    val initialRow: Int,
+    val initialColumn: Int,
+    val finalRow: Int,
+    val finalColumn: Int
 )
