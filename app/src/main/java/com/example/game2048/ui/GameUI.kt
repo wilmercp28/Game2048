@@ -1,6 +1,12 @@
 package com.example.game2048.ui
 
+import android.util.Log
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,16 +18,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.game2048.boxColors
 import com.example.game2048.generateNextNumber
 import com.example.game2048.getSwipeModifier
 import com.example.game2048.move
+import com.example.game2048.textSize
 import kotlinx.coroutines.delay
 import java.util.Random
 
@@ -33,10 +43,12 @@ fun GameBoard(
     val boxSize = 100
     val gridSize = 4
     val array = getArray(gridSize, gameStarted)
-    val combinedCellList = remember { mutableListOf<Int>() }
+    val combinedCellList = remember { mutableListOf<Pair<Int, Int>>() }
     Column(
         modifier = getSwipeModifier {
             move(it, array, gridSize) {
+                Log.d("Pairs", it.toString())
+                combinedCellList.addAll(it)
             }
             generateNextNumber(array)
         }
@@ -53,41 +65,50 @@ fun GameBoard(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Tiles(array[i][j].value, boxSize, shouldAnimate = array[i][j].value in combinedCellList)
+                        Tiles(
+                            array[i][j].value,
+                            boxSize,
+                            shouldAnimate = Pair(i, j) in combinedCellList,
+                            combinedCellList
+                        )
                     }
             }
         }
     }
-    combinedCellList.clear()
 }
 
 @Composable
 fun Tiles(
     value: Int,
     size: Int,
-    shouldAnimate: Boolean
+    shouldAnimate: Boolean,
+    combinedCellList: MutableList<Pair<Int, Int>>
 ) {
     val boxSize = remember { mutableStateOf(size) }
-    val expandSize = 300
-
-    LaunchedEffect(value) {
-        if (shouldAnimate) {
-            boxSize.value = expandSize
-            delay(100)
-            boxSize.value = size
-        }
-    }
-    Box(
-        modifier = Modifier
+    val alpha by animateFloatAsState(
+        targetValue = if (shouldAnimate) 1f else 0f,
+        animationSpec = tween(durationMillis = 500)
+    )
+    val modifier = if (shouldAnimate) {
+        Modifier
             .size((boxSize.value - 20).dp)
-            .animateContentSize()
-            .background(boxColors(value)),
+            .background(boxColors(value))
+            .alpha(alpha)
+    } else {
+        Modifier
+            .size((boxSize.value - 20).dp)
+            .background(boxColors(value))
+    }
+
+    Box(
+        modifier,
         contentAlignment = Alignment.Center
     ) {
         if (value != 0) {
             Text(
                 text = value.toString(),
                 color = Color.Black,
+                fontSize = textSize(value,10).sp
             )
         }
     }

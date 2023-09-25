@@ -17,3 +17,20 @@ fun boxColors(
         else -> Color.Gray // Default color for unknown values
     }
 }
+fun textSize(
+    value: Int,
+    defaultTextSize: Int
+): Int{
+
+        return when (value) {
+            2 -> defaultTextSize + 2
+            4 -> defaultTextSize + 4
+            8 -> defaultTextSize + 6
+            16 -> defaultTextSize + 8
+            32 -> defaultTextSize + 10
+            64 -> defaultTextSize + 12
+            128 -> defaultTextSize + 14
+            256 -> defaultTextSize + 16
+            else -> 0
+        }
+    }
