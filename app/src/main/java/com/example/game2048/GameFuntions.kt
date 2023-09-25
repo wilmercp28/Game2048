@@ -1,6 +1,5 @@
 package com.example.game2048
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 
 fun move(
