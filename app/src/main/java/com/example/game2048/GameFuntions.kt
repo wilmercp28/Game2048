@@ -1,5 +1,6 @@
 package com.example.game2048
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 
 fun move(
@@ -19,51 +20,119 @@ fun moveRight(
     array: List<List<MutableState<Int>>>,
     boardSize: Int,
 ) {
-    for (row in 0 until boardSize) {
-        for (column in boardSize - 2 downTo 0) {  // Start from the second-to-last column
-            if (array[column][row].value == 0) {
-                // Move non-zero values to the right
-                for (index in column until boardSize - 1) {
-                    array[index][row].value = array[index + 1][row].value
-                }
-                array[boardSize - 1][row].value = 0  // Set the rightmost element to 0
+    for (row in array.indices) {
+        val temp = mutableListOf<Int>()
+        for (column in array[row].indices) {
+            val value = array[row][column].value
+            if (value != 0) {
+                temp.add(value)
             }
+        }
+        while (temp.size < boardSize) {
+            temp.add(0, 0)
+        }
+        for (i in boardSize - 1 downTo 1) {
+            if (temp[i] == temp[i - 1] && temp[i] != 0) {
+                temp[i] *= 2
+                temp[i - 1] = 0
+            }
+        }
+        val result = mutableListOf<Int>()
+        for (value in temp) {
+            if (value != 0) {
+                result.add(value)
+            }
+        }
+        while (result.size < boardSize) {
+            result.add(0, 0)
+        }
+
+        for (column in array[row].indices) {
+            array[row][column].value = result[column]
         }
     }
 }
 
+fun moveLeft(array: List<List<MutableState<Int>>>, boardSize: Int) {
+    for (row in array.indices) {
+        val temp = mutableListOf<Int>()
+        for (column in array[row].indices) {
+            val value = array[row][column].value
+            if (value != 0) {
+                temp.add(value)
+            }
+        }
+        while (temp.size < boardSize) {
+            temp.add(0)
+        }
+        for (i in 0 until boardSize - 1) {
+            if (temp[i] == temp[i + 1] && temp[i] != 0) {
+                temp[i] *= 2
+                temp[i + 1] = 0
+            }
+        }
+        val result = mutableListOf<Int>()
+        for (value in temp) {
+            if (value != 0) {
+                result.add(value)
+            }
+        }
+        while (result.size < boardSize) {
+            result.add(0)
+        }
 
-fun moveLeft(array: List<List<MutableState<Int>>>, boardSide: Int) {
-    for (row in 3 downTo 1) {
-        for (column in 0 until 4) {
-            if (array[column][row].value != 0 && array[column][row - 1].value == 0) {
-                array[column][row - 1].value = array[column][row].value
-                array[column][row].value = 0
-            }
+        for (column in array[row].indices) {
+            array[row][column].value = result[column]
         }
     }
-    for (row in 0 until 3) {
-        for (column in 0 until 4) {
-            if (array[column][row].value == array[column][row + 1].value) {
-                array[column][row].value *= 2
-                array[column][row + 1].value = 0
+}
+fun moveUp(array: List<List<MutableState<Int>>>, boardSize: Int) {
+    for (column in 0 until boardSize) {
+        val temp = mutableListOf<Int>()
+        for (row in 0 until boardSize) {
+            val value = array[row][column].value
+            if (value != 0) {
+                temp.add(value)
             }
         }
-    }
-    for (row in 3 downTo 1) {
-        for (column in 0 until 4) {
-            if (array[column][row].value != 0 && array[column][row - 1].value == 0) {
-                array[column][row - 1].value = array[column][row].value
-                array[column][row].value = 0
+        for (i in 0 until temp.size - 1) {
+            if (temp[i] == temp[i + 1] && temp[i] != 0) {
+                temp[i] *= 2
+                temp[i + 1] = 0
             }
+        }
+        temp.removeAll { it == 0 }
+        while (temp.size < boardSize) {
+            temp.add(0)
+        }
+
+        for (row in 0 until boardSize) {
+            array[row][column].value = temp[row]
         }
     }
 }
 
-fun moveUp(array: List<List<MutableState<Int>>>, boardSide: Int) {
-
-}
-
-fun moveDown(array: List<List<MutableState<Int>>>, boardSide: Int) {
-
+fun moveDown(array: List<List<MutableState<Int>>>, boardSize: Int) {
+    for (column in 0 until boardSize) {
+        val temp = mutableListOf<Int>()
+        for (row in (boardSize - 1) downTo 0) {
+            val value = array[row][column].value
+            if (value != 0) {
+                temp.add(value)
+            }
+        }
+        for (i in 0 until temp.size - 1) {
+            if (temp[i] == temp[i + 1] && temp[i] != 0) {
+                temp[i] *= 2
+                temp[i + 1] = 0
+            }
+        }
+        temp.removeAll { it == 0 }
+        while (temp.size < boardSize) {
+            temp.add(0)
+        }
+        for (row in (boardSize - 1) downTo 0) {
+            array[row][column].value = temp[boardSize - 1 - row]
+        }
+    }
 }
