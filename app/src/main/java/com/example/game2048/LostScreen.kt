@@ -48,8 +48,8 @@ fun LostScreen(
 
     }
     if (gameLost.value){
-        val array = List(gridSize) { row ->
-            List(gridSize) { col ->
+        val array = List(gridSize) {
+            List(gridSize) {
                 remember { mutableStateOf(0) }
             }
         }

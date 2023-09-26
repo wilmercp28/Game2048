@@ -152,8 +152,8 @@ fun Tiles(
 
 @Composable
 fun getArray(gridSize: Int, gameStarted: MutableState<Boolean>): List<List<MutableState<Int>>> {
-    val array = List(gridSize) { row ->
-        List(gridSize) { col ->
+    val array = List(gridSize) {
+        List(gridSize) {
             remember { mutableStateOf(0) }
         }
     }

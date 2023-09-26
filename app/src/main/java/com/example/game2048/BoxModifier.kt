@@ -1,5 +1,6 @@
 package com.example.game2048
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -9,7 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import java.lang.Math.abs
+
+
 
 @Composable
 fun getSwipeModifier(onSwipe: (SwipeDirection) -> Unit): Modifier {
@@ -21,7 +23,7 @@ fun getSwipeModifier(onSwipe: (SwipeDirection) -> Unit): Modifier {
                     change.consume()
 
                     val (x, y) = dragAmount
-                    if (abs(x) > abs(y)) {
+                    if (kotlin.math.abs(x) > kotlin.math.abs(y)) {
                         when {
                             x > 0 -> {
                                 //right
