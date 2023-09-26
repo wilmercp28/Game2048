@@ -80,7 +80,6 @@ fun GameBoard() {
                                 200,
                                 Pair(i, j),
                                 combinedCellList,
-                                direction,
                                 boxSize.toInt()
                             )
                         }
@@ -99,7 +98,6 @@ fun Tiles(
     animationDelay: Int,
     animationPair: Pair<Int, Int>,
     combinedCellList: MutableList<Pair<Int, Int>>,
-    direction: MutableState<SwipeDirection?>,
     singleBoxSize: Int,
 
     ) {
@@ -148,7 +146,7 @@ fun getArray(gridSize: Int, gameStarted: MutableState<Boolean>): List<List<Mutab
             val indexPair = Pair(randomRow, randomCol)
 
             if (indexPair !in indices) {
-                val randomNumber = if (random.nextDouble() < 0.25) 2 else 4
+                val randomNumber = 2
 
                 array[randomRow][randomCol].value = randomNumber
                 indices.add(indexPair)
