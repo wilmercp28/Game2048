@@ -1,6 +1,10 @@
 package com.example.game2048.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.game2048.LostScreen
 import com.example.game2048.SwipeDirection
 import com.example.game2048.boxColors
 import com.example.game2048.generateNextNumber
@@ -31,11 +36,12 @@ import java.util.Random
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun GameBoard() {
     val gameStarted = remember { mutableStateOf(false) }
     val gridSize = 4
-    val array = getArray(gridSize, gameStarted)
+    var array = getArray(gridSize, gameStarted)
     val combinedCellList = remember { mutableListOf<Pair<Int, Int>>() }
     val direction = remember { mutableStateOf<SwipeDirection?>(null) }
     val score = remember { mutableStateOf(0) }
@@ -45,46 +51,61 @@ fun GameBoard() {
     val textScoreSizeRange = maxScoreTextSize - minScoreTextSize
     val normalizedScore = (score.value.toFloat() / maxScoreTextSize.toFloat()).coerceIn(0f, 1f)
     val fontSize = (minScoreTextSize + textScoreSizeRange * normalizedScore).sp
-
-    BoxWithConstraints {
-        val screenWidth = constraints.maxWidth
-        val boxSize = screenWidth / gridSize * 0.3f
-        Column(
-            modifier = getSwipeModifier { swipeDirection ->
-                direction.value = swipeDirection
-                move(swipeDirection, array, gridSize) {
-                    combinedCellList.addAll(it)
-                }
-                generateNextNumber(array)
-            },
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = score.value.toString(),
-                fontSize = fontSize
-            )
-            for (i in 0 until gridSize) {
-                Row(
-                    modifier = Modifier
-                ) {
-                    for (j in 0 until gridSize) {
-                        Box(
-                            modifier = Modifier
-                                .size(boxSize.dp),
-                            contentAlignment = Alignment.Center
-                        )
-                        {
-                            Tiles(
-                                array[i][j].value,
-                                200,
-                                Pair(i, j),
-                                combinedCellList,
-                                boxSize.toInt()
-                            )
-                        }
+    val gameLost = remember { mutableStateOf(true) }
+    AnimatedVisibility(
+        gameLost.value,
+        enter = scaleIn(),
+        exit = scaleOut()
+    ) {
+        LostScreen(score, gameStarted, gameLost,gridSize){
+            array = it
+        }
+    }
+    AnimatedVisibility(
+        !gameLost.value,
+        enter = scaleIn(),
+        exit = scaleOut()
+    ) {
+        BoxWithConstraints {
+            val screenWidth = constraints.maxWidth
+            val boxSize = screenWidth / gridSize * 0.3f
+            Column(
+                modifier = getSwipeModifier { swipeDirection ->
+                    direction.value = swipeDirection
+                    move(swipeDirection, array, gridSize) {
+                        combinedCellList.addAll(it)
                     }
+                    generateNextNumber(array, gameLost)
+                },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = score.value.toString(),
+                    fontSize = fontSize
+                )
+                for (i in 0 until gridSize) {
+                    Row(
+                        modifier = Modifier
+                    ) {
+                        for (j in 0 until gridSize) {
+                            Box(
+                                modifier = Modifier
+                                    .size(boxSize.dp),
+                                contentAlignment = Alignment.Center
+                            )
+                            {
+                                Tiles(
+                                    array[i][j].value,
+                                    200,
+                                    Pair(i, j),
+                                    combinedCellList,
+                                    boxSize.toInt()
+                                )
+                            }
+                        }
 
+                    }
                 }
             }
         }
