@@ -35,14 +35,8 @@ fun textSize(value: Int, defaultTextSize: Int): Int {
         128 -> defaultTextSize + 14
         256 -> defaultTextSize + 16
         512 -> defaultTextSize + 18
-        1024 -> defaultTextSize + 20
-        2048 -> defaultTextSize + 22
-        4096 -> defaultTextSize + 24
-        8192 -> defaultTextSize + 26
-        16384 -> defaultTextSize + 28
-        32768 -> defaultTextSize + 30
-        65536 -> defaultTextSize + 32
-        131072 -> defaultTextSize + 34
-        else -> defaultTextSize
+        1024 -> defaultTextSize + 19
+        2048 -> defaultTextSize + 20
+        else -> defaultTextSize + 4
     }
 }

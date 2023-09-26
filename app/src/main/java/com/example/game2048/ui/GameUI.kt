@@ -65,6 +65,11 @@ fun GameBoard(
     val score = remember { mutableStateOf(0) }
     val gameLost = remember { mutableStateOf(false) }
     val hasWon = remember { mutableStateOf(false) }
+    if (!gameStarted.value){
+        generateNextNumber(array,gameLost)
+        generateNextNumber(array,gameLost)
+        gameStarted.value = true
+    }
     AnimatedVisibility(
         hasWon.value,
         enter = scaleIn(),
@@ -213,7 +218,7 @@ fun Tiles(
             Text(
                 text = value.toString(),
                 color = Color.Black,
-                fontSize = textSize(value, 10).sp
+                fontSize = textSize(value, 8).sp
             )
         }
     }
