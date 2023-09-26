@@ -22,3 +22,18 @@ fun generateNextNumber(array: List<List<MutableState<Int>>>, gameLost: MutableSt
         gameLost.value = true
     }
 }
+fun cleanArray(
+    startNumberOfTitles: Int,
+    array: List<List<MutableState<Int>>>,
+    gridSize: Int,
+    gameLost: MutableState<Boolean>
+) {
+    for (col in 0 until gridSize){
+        for (row in 0 until gridSize){
+            array[col][row].value = 0
+        }
+    }
+    for (newNumbers in 0 until startNumberOfTitles){
+        generateNextNumber(array,gameLost)
+    }
+}

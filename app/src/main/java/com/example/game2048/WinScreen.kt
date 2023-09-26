@@ -18,24 +18,24 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 
 @Composable
-fun LostScreen(
+fun WinScreen(
     score: MutableState<Int>,
+    hasWon: MutableState<Boolean>,
+    array: List<List<MutableState<Int>>>,
+    startNumberOfTitles: Int,
+    gridSize: Int,
     gameStarted: MutableState<Boolean>,
     gameLost: MutableState<Boolean>,
-    gridSize: Int,
-    startNumberOfTitles: Int,
-    array: List<List<MutableState<Int>>>,
     bestScore: MutableState<Int>,
     dataStore: DataStore<Preferences>,
-    startGame: MutableState<Boolean>,
-    ) {
+    startGame: MutableState<Boolean>
+) {
     val context = LocalContext.current
     if (score.value > bestScore.value){
         LaunchedEffect(Unit){
             saveData(score.value,context,dataStore)
         }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,13 +43,14 @@ fun LostScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp, alignment = Alignment.CenterVertically)
     ) {
-        Text(text = "You Lost!", fontSize = 70.sp)
+        Text(text = "You Won!", fontSize = 70.sp)
         Text(text = "Final score ${score.value}", fontSize = 40.sp)
         ElevatedButton(onClick = {
-            cleanArray(startNumberOfTitles,array,gridSize,gameLost)
+            cleanArray(startNumberOfTitles, array, gridSize, gameLost)
             score.value = 0
             gameStarted.value = true
             gameLost.value = false
+            hasWon.value = false
         }) {
             Text(text = "Restart", fontSize = 50.sp)
         }
@@ -63,3 +64,5 @@ fun LostScreen(
 
     }
 }
+
+

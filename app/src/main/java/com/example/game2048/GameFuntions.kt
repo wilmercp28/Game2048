@@ -6,22 +6,23 @@ fun move(
     swipeDirection: SwipeDirection,
     array: List<List<MutableState<Int>>>,
     boardSide: Int,
+    score: MutableState<Int>,
     onCombine: (List<Pair<Int, Int>>) -> Unit
 ) {
     when (swipeDirection) {
-        SwipeDirection.Right -> moveRight(array, boardSide) {
+        SwipeDirection.Right -> moveRight(array, boardSide,score) {
             onCombine(it)
         }
 
-        SwipeDirection.Left -> moveLeft(array, boardSide) {
+        SwipeDirection.Left -> moveLeft(array, boardSide,score) {
             onCombine(it)
         }
 
-        SwipeDirection.Up -> moveUp(array, boardSide) {
+        SwipeDirection.Up -> moveUp(array, boardSide,score) {
             onCombine(it)
         }
 
-        SwipeDirection.Down -> moveDown(array, boardSide) {
+        SwipeDirection.Down -> moveDown(array, boardSide,score) {
             onCombine(it)
         }
     }
@@ -30,6 +31,7 @@ fun move(
 fun moveRight(
     array: List<List<MutableState<Int>>>,
     boardSize: Int,
+    score: MutableState<Int>,
     onCombine: (List<Pair<Int, Int>>) -> Unit
 ) {
     val combinedIndices = mutableListOf<Pair<Int, Int>>()
@@ -49,6 +51,7 @@ fun moveRight(
         for (i in boardSize - 1 downTo 1) {
             if (temp[i] == temp[i - 1] && temp[i] != 0) {
                 temp[i] *= 2
+                score.value += temp[i]
                 temp[i - 1] = 0
                 combinedIndices.add(Pair(row, i))
             }
@@ -75,6 +78,7 @@ fun moveRight(
 fun moveLeft(
     array: List<List<MutableState<Int>>>,
     boardSize: Int,
+    score: MutableState<Int>,
     onCombine: (List<Pair<Int, Int>>) -> Unit
 ) {
     val combinedIndices = mutableListOf<Pair<Int, Int>>()
@@ -92,6 +96,7 @@ fun moveLeft(
         for (i in 0 until boardSize - 1) {
             if (temp[i] == temp[i + 1] && temp[i] != 0) {
                 temp[i] *= 2
+                score.value += temp[i]
                 temp[i + 1] = 0
                 combinedIndices.add(Pair(row, i))
             }
@@ -118,6 +123,7 @@ fun moveLeft(
 fun moveUp(
     array: List<List<MutableState<Int>>>,
     boardSize: Int,
+    score: MutableState<Int>,
     onCombine: (List<Pair<Int, Int>>) -> Unit
 ) {
     val combinedIndices = mutableListOf<Pair<Int, Int>>()
@@ -132,6 +138,7 @@ fun moveUp(
         for (i in 0 until temp.size - 1) {
             if (temp[i] == temp[i + 1] && temp[i] != 0) {
                 temp[i] *= 2
+                score.value += temp[i]
                 temp[i + 1] = 0
                 combinedIndices.add(Pair(i, column))
             }
@@ -153,6 +160,7 @@ fun moveUp(
 fun moveDown(
     array: List<List<MutableState<Int>>>,
     boardSize: Int,
+    score: MutableState<Int>,
     onCombine: (List<Pair<Int, Int>>) -> Unit
 ) {
     val combinedIndices = mutableListOf<Pair<Int, Int>>()
@@ -167,6 +175,7 @@ fun moveDown(
         for (i in 0 until temp.size - 1) {
             if (temp[i] == temp[i + 1] && temp[i] != 0) {
                 temp[i] *= 2
+                score.value += temp[i]
                 temp[i + 1] = 0
                 combinedIndices.add(Pair(boardSize - 1 - i, column))
             }

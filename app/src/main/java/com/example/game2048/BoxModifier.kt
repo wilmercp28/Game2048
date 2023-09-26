@@ -1,8 +1,9 @@
 package com.example.game2048
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,33 +17,31 @@ import androidx.compose.ui.input.pointer.pointerInput
 @Composable
 fun getSwipeModifier(onSwipe: (SwipeDirection) -> Unit): Modifier {
     var direction by remember { mutableStateOf(-1) }
+    val minimumDrag = 30
+    val damping = 0.9f
     return Modifier
         .pointerInput(Unit) {
             detectDragGestures(
                 onDrag = { change, dragAmount ->
                     change.consume()
-
-                    val (x, y) = dragAmount
+                    val (x, y) = dragAmount * damping
                     if (kotlin.math.abs(x) > kotlin.math.abs(y)) {
                         when {
-                            x > 0 -> {
-                                //right
+                            x > minimumDrag -> {
                                 direction = 0
                             }
-
-                            x < 0 -> {
-                                // left
+                            x < -minimumDrag -> {
                                 direction = 1
                             }
                         }
                     } else {
                         when {
-                            y > 0 -> {
+                            y > minimumDrag -> {
                                 // down
                                 direction = 2
                             }
 
-                            y < 0 -> {
+                            y < -minimumDrag -> {
                                 // up
                                 direction = 3
                             }
@@ -72,6 +71,7 @@ fun getSwipeModifier(onSwipe: (SwipeDirection) -> Unit): Modifier {
             )
         }
         .fillMaxSize()
+        .background(MaterialTheme.colorScheme.primary)
 }
 
 
